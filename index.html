@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>러브라뗴 변환기</title>
+	<style>
+	</style>
+
+</head>
+<body>
+	<h1>러브라뗴 변환기</h1>
+	<hr>
+	<br>
+	<textarea  id="before" cols="60" rows="15" style="font-size:15px;"></textarea>
+	<br>
+	<button onclick ='love()' style="font-size:63px;"> 변환 </button>
+	<button onclick ='copy()' style="font-size:63px;"> 복사 </button>
+	<button onclick ='cho()' style="font-size:64px;"> 초기화 </button>
+	<br>
+
+<script>
+
+
+var index=0;
+var br = new Array();
+var hc = new Array();
+var hi = 0;
+var el = new Array();
+var ei = 0;
+var ei2 = 0;
+
+
+function ishangul(ch) {
+  var c = ch.charCodeAt(0);
+  if( 0x1100<=c && c<=0x11FF ) return true;
+  if( 0x3130<=c && c<=0x318F ) return true;
+  if( 0xAC00<=c && c<=0xD7A3 ) return true;
+  return false;
+}
+
+function copy() {    
+  var copyText = document.getElementById('before');
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("Copy");
+  alert('복사완료');
+}
+
+function cho() {  
+	index=0;
+	hi = 0;
+    ei = 0;
+    ei2 = 0;
+    br=[];
+    hc=[];
+    el=[];
+    var chot = document.getElementById('before');
+    chot.value='';
+}
+
+
+
+
+
+
+
+
+
+
+
+function aaf(kor) {
+
+    const f = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ',
+               'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ',
+               'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+    const s = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ',
+               'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ',
+               'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'];
+    const t = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ',
+               'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ',
+               'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ',
+               'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+    let fn=77;
+    let sn=77;
+    let tn=77;
+    let uni = kor.charCodeAt(0);
+
+
+    if(uni>=12593 && uni <12623){
+    	tn=uni;
+    }
+    else if(uni>=12623 && uni <12644){
+    	tn=uni;
+    }
+    
+    else{
+       uni = uni - 44032;
+       fn = parseInt(uni / 588);
+       sn = parseInt((uni - (fn * 588)) / 28);
+       tn = parseInt(uni % 28);
+    }
+
+    br[index]=fn;
+    br[index+1]=sn;
+    br[index+2]=tn;
+    index+=3
+
+}
+
+
+
+
+
+function love(){
+	index=0;
+	hi = 0;
+    ei = 0;
+    ei2 = 0;
+    br=[];
+    hc=[];
+    el=[];
+	var txtarea = document.getElementById('before');
+	var contents = txtarea.value.replace(/(\n|\r\n)/g, '∮');
+	contents = contents.replace(/ /gi, "⁂");
+    contents = contents.replace(/들/gi, "듀랴");		
+    contents = contents.replace(/도/gi, "듀");	
+    contents = contents.replace(/와/gi, "오ㅏ");				
+
+
+	for(i=0 ; i<contents.length ; i++){	
+
+	    if(ishangul(contents[i])){
+	    	aaf(contents[i]); 
+	    }
+
+		else if (contents[i]=="⁂"){
+					br[index]="⁂";
+					br[index+1]="⁂";
+					br[index+2]="⁂";
+					index+=3;
+		}
+
+		else if(contents[i]=="∮"){
+					br[index]="∮";
+					br[index+1]="∮";
+					br[index+2]="∮";
+					index+=3;
+		}
+
+		else{
+					el[ei]=contents[i];
+					br[index]="œ";
+					br[index+1]="œ";
+					br[index+2]="œ";
+					index+=3;
+					ei+=1;
+
+        }
+	}
+
+
+
+
+	for (j=0 ; j<index ; j+=3){
+
+		if(br[j+1]!=77){ 
+
+			if(br[j+2]==9||br[j+2]==3)
+				br[j+2]=1;
+			else if (br[j+2]==6)
+				br[j+2]=4;
+			else if (br[j+2]==13 || br[j+2]==11)
+				br[j+2]=7;
+			else if (br[j+2]==15)
+				br[j+2]=8;
+			else if (br[j+2]==10)
+				br[j+2]=16;
+			else if (br[j+2]==14)
+				br[j+2]=26;
+			
+		}
+
+
+
+		if(br[j+2]!=0 &&br[j+2]!=21 && br[j+3]==11 && br[j+1]!=77){ 
+
+			if(br[j+2]==5){
+					br[j+2]=4;
+					br[j+3]=12;
+			}
+			else if(br[j+2]==18){
+					br[j+2]=17;
+					br[j+3]=9;
+			}
+			else{
+
+				if(br[j+2]==1)
+					br[j+3]=0;
+				else if(br[j+2]==4)
+					br[j+3]=2;
+				else if(br[j+2]==7)
+					br[j+3]=3;
+				else if(br[j+2]==8)
+					br[j+3]=5;
+				else if(br[j+2]==16)
+					br[j+3]=6;
+				else if(br[j+2]==17)
+					br[j+3]=7;
+				else if(br[j+2]==19)
+					br[j+3]=9;
+				else if(br[j+2]==22)
+					br[j+3]=12;
+				else if(br[j+2]==23)
+					br[j+3]=14;
+				else if(br[j+2]==24)
+					br[j+3]=15;
+				else if(br[j+2]==25)
+					br[j+3]=16;
+				else if(br[j+2]==26)
+					br[j+3]=17;
+				else if(br[j+2]==27)
+					br[j+3]=18;
+				else if(br[j+2]==2)
+					br[j+3]=1;
+				else if(br[j+2]==20)
+					br[j+3]=10;
+				br[j+2]=0;
+			}
+				
+
+		}
+
+
+
+
+
+
+		if(br[j+1]==0 || br[j+1]==1 ||  br[j+1]==5 || br[j+1]==4)
+			br[j+1]+=2;
+        if(br[j+1]==13)
+	        br[j+1]=17;
+        if(br[j+1]==11)
+        	br[j+1]=7;
+        if(br[j+1]==16)
+        	br[j+1]=19;
+        if(br[j+1]==14)
+	        br[j+1]=4;
+        if(br[j+1]==4 && br[j+2]!=0)
+	        br[j+1]=6;
+        if(br[j+2]==4 && br[j+3]==18){
+        	br[j+3]=2;
+	        br[j+2]=0;
+	    }
+	    if(br[j+1]==18)
+	        br[j+1]=13;
+	    if(br[j+1]==8 && br[j]==0)
+	        br[j+1]=17;
+	    if(br[j+1]==8 && br[j]!=11)
+	        br[j+1]=12;
+	    if(br[j+1]==9)
+	        br[j+1]=0;
+	    
+
+
+
+
+
+
+
+	    if(br[j+1]!=77){ 
+	    	if(br[j+2]==5){
+					br[j+2]=4;
+			}
+			else if(br[j+2]==18){
+					br[j+2]=17;
+			}
+			else if (br[j+2]==20)
+				br[j+2]=19;
+		}
+		if(br[j+2]==1 && br[j+3]==18){
+			br[j+2]=0;
+			br[j+3]=15;
+		}
+		if(br[j+2]==19 && br[j+3]==3){
+	        br[j+2]=0;
+	        br[j+3]=4;
+	    }
+
+
+        if(Math.floor(Math.random() * 10)>7){
+        	if(br[j+2]!=0 && Number.isInteger(br[j+2]) && br[j+1]!=77){
+        		var a = br[j+2];
+        		br[j+2]=0;
+
+        		if(a>7 && a<18 )
+        			a+=1;
+        		else if (a>=18 && a<=22)
+        			a+=2;
+        		else if (a>22)
+        			a+=3;
+
+        		for(k=(br.length)-1 ; k>j+2 ; k--){
+        			br[k+3]=br[k];
+        		}
+        		br[j+3]=77;
+        		br[j+4]=77;
+        		br[j+5]=a+12592;
+        		index+=3;
+        	}
+        }
+        if(Math.floor(Math.random() * 100)>92){
+        	if(br[j]=="⁂" && br[j-3]!="Ħ" && br[j-3]!="◍"){
+        		for(k=(br.length)-1 ; k>j-1 ; k--){
+        			br[k+3]=br[k];
+        		}
+        		br[j]="Ħ";
+        		br[j+1]="Ħ";
+        		br[j+2]="Ħ";
+        		index+=3;
+        	}
+        }
+        else if(Math.floor(Math.random() * 100)>88){
+        	if(br[j]=="⁂" && br[j-3]!="◍" && br[j-3]!="Ħ"){
+        		for(k=(br.length)-1 ; k>j-1 ; k--){
+        			br[k+3]=br[k];
+        		}
+        		br[j]="◍";
+        		br[j+1]="◍";
+        		br[j+2]="◍";
+        		index+=3;
+        	}
+        }
+    }
+
+
+
+
+
+    if( Number.isInteger(br[br.length-1])){
+	    br[br.length]=888;
+	    index+=1;
+    }
+
+
+
+
+
+
+		
+    for (j=0 ; j<index ; j+=3){
+	    if(br[j]=="∮"){
+				hc[hi]='\n';
+				hi+=1
+	    }
+	    else if(br[j]=="⁂"){
+				hc[hi]=" ";
+				hi+=1
+	    }
+	    else if(br[j]=="œ"){
+				hc[hi]=el[ei2];
+				hi+=1
+				ei2+=1;
+	    }
+	    else if(br[j]=="Ħ"){
+				hc[hi]="♥️";
+				hi+=1
+	    }
+	    else if(br[j]=="◍"){
+				hc[hi]="♡";
+				hi+=1
+	    }
+	    else if(br[j]=="888"){
+				hc[hi]="~";
+				hc[hi+1]="!";
+				hc[hi+2]=">";
+				hc[hi+3]="<";
+				hc[hi+4]="♥️";			
+	    }  
+	    else{
+		    if(br[j]==77 && br[j+1]==77){
+			    hc[hi]= String.fromCharCode(  br[j+2]  )
+		    }
+		    else{
+			    hc[hi]= String.fromCharCode(  br[j]*588 + br[j+1]*28 + br[j+2]+44032  )
+		    }
+		    hi+=1;
+	    }
+    }
+
+
+
+
+
+	var final = hc.join('');
+		
+	final = final.replace(/와/gi, "오ㅏ");
+	final = final.replace(/의/gi, "으");
+	final = final.replace(/량/gi, "랴ㅇ");
+	final = final.replace(/놔/gi, "나");
+	final = final.replace(/눈/gi, "뉴ㄴ");
+	final = final.replace(/을/gi, "유ㄹ");
+	final = final.replace(/염쳥/gi, "음챠");
+	final = final.replace(/염쳐ㅇ/gi, "음챠ㅇ");
+	final = final.replace(/졍먈/gi, "즁마알");
+	final = final.replace(/졍먀ㄹ/gi, "즁마ㄹ");
+	final = final.replace(/를/gi, "류ㄹ");
+	final = final.replace(/뎨 /gi, "뎽 ");
+	final = final.replace(/오뺘갸/gi, "오빠걍");
+	final = final.replace(/써요</gi, "써연~<");
+	final = final.replace(/요</gi, "얏~☆<");
+	final = final.replace(/고</gi, "귱~ෆ<");
+	final = final.replace(/구</gi, "규ෆ<");
+	final = final.replace(/다</gi, "댜~><<");
+	final = final.replace(/죠</gi, "쟈~ෆ><<");
+	final = final.replace(/죠.</gi, "쨔!<");
+	final = final.replace(/다.</gi, "닷♡<");
+	final = final.replace(/써요.</gi, "써엿~<");
+	final = final.replace(/요.</gi, "욤~☆<");
+	final = final.replace(/고.</gi, "고~!<");
+	final = final.replace(/구.</gi, "귱<");
+	final = final.replace(/ㅋ/gi, "w");	
+	txtarea.value=final;
+
+}
+	</script>
+</body>
+</html>
